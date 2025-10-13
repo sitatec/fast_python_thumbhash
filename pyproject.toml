@@ -1,0 +1,22 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "fast_thumbhash"
+version = "0.1.0"
+description = "Fast ThumbHash bindings for Python using Rust (PyO3)"
+authors = ["Sita Berete"]
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+pillow = ["Pillow"]
+
+[tool.maturin]
+python-source = "fast_thumbhash"
