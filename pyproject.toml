@@ -19,4 +19,4 @@ classifiers = [
 pillow = ["Pillow"]
 
 [tool.maturin]
-python-source = "fast_thumbhash"
+python-source = "."

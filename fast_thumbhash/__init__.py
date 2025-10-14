@@ -1,3 +1,5 @@
+from .wrappers import image_to_thumb_hash
+
 from .fast_thumbhash import (
     rgba_to_thumb_hash,
     thumb_hash_to_rgba,
@@ -6,6 +8,7 @@ from .fast_thumbhash import (
 )
 
 __all__ = [
+    "image_to_thumb_hash",
     "rgba_to_thumb_hash",
     "thumb_hash_to_rgba",
     "thumb_hash_to_average_rgba",

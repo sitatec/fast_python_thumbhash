@@ -1,33 +1,33 @@
 use pyo3::prelude::*;
 use thumbhash;
 
-// Helper to convert the thumbhash-specific error into a Python ValueError.
-fn to_py_err(e: thumbhash::ThumbHashError) -> PyErr {
-    PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string())
-}
-
-#[pyfunction]
+#[pyfunction(name = "rgba_to_thumb_hash")]
 fn py_rgba_to_thumb_hash(py: Python, width: usize, height: usize, rgba: &[u8]) -> Vec<u8> {
     py.allow_threads(|| thumbhash::rgba_to_thumb_hash(width, height, rgba))
 }
 
-#[pyfunction]
+#[pyfunction(name = "thumb_hash_to_rgba")]
 fn py_thumb_hash_to_rgba(py: Python, hash: &[u8]) -> PyResult<(usize, usize, Vec<u8>)> {
-    let result = py.allow_threads(|| {
-        thumbhash::thumb_hash_to_rgba(hash)
-    })?; 
-    
-    result.map_err(to_py_err)
+    py.allow_threads(|| thumbhash::thumb_hash_to_rgba(hash))
+        .map_err(|_| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>("Invalid or malformed thumbhash")
+        })
 }
 
-#[pyfunction]
-fn py_thumb_hash_to_average_rgba(py: Python, hash: &[u8]) -> (f32, f32, f32, f32) {
+#[pyfunction(name = "thumb_hash_to_average_rgba")]
+fn py_thumb_hash_to_average_rgba(py: Python, hash: &[u8]) -> PyResult<(f32, f32, f32, f32)> {
     py.allow_threads(|| thumbhash::thumb_hash_to_average_rgba(hash))
+        .map_err(|_| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>("Invalid or malformed thumbhash")
+        })
 }
 
-#[pyfunction]
-fn py_thumb_hash_to_approximate_aspect_ratio(py: Python, hash: &[u8]) -> f32 {
+#[pyfunction(name = "thumb_hash_to_approximate_aspect_ratio")]
+fn py_thumb_hash_to_approximate_aspect_ratio(py: Python, hash: &[u8]) -> PyResult<f32> {
     py.allow_threads(|| thumbhash::thumb_hash_to_approximate_aspect_ratio(hash))
+        .map_err(|_| {
+            PyErr::new::<pyo3::exceptions::PyValueError, _>("Invalid or malformed thumbhash")
+        })
 }
 
 #[pymodule]
