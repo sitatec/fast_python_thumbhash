@@ -6,13 +6,13 @@ build-backend = "maturin"
 name = "fast_thumbhash"
 version = "0.1.0"
 description = "Fast ThumbHash bindings for Python using Rust (PyO3)"
-authors = ["Sita Berete"]
+authors = [{ name = "Sita Berete" }]
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Rust",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Rust",
+  "Operating System :: OS Independent",
 ]
 
 [project.optional-dependencies]
