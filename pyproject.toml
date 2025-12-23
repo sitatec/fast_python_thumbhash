@@ -20,3 +20,6 @@ pillow = ["Pillow"]
 
 [tool.maturin]
 python-source = "."
+
+[tool.cibuildwheel]
+build = "cp310-* cp311-* cp312-*"
