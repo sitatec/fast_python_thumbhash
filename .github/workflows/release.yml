@@ -1,11 +1,3 @@
-# This workflow will upload a Python Package to PyPI when a release is created
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Upload Python Package
 
 on:
@@ -16,7 +8,33 @@ permissions:
   contents: read
 
 jobs:
-  release-build:
+  build:
+    name: Build wheels (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Build wheels for Python 3.10–3.12
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.16
+        with:
+          build: cp310-* cp311-* cp312-*
+          output-dir: dist
+
+      - name: Upload wheel artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: dist/*.whl
+
+  sdist:
+    name: Build sdist
     runs-on: ubuntu-latest
 
     steps:
@@ -26,45 +44,37 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build release distributions
+      - name: Build sdist
         run: |
-          # NOTE: put your own distribution build steps here.
-          python -m pip install build
-          python -m build
+          python -m pip install --upgrade pip build
+          python -m build --sdist
 
-      - name: Upload distributions
+      - name: Upload sdist artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-dists
-          path: dist/
+          name: sdist
+          path: dist/*.tar.gz
 
   pypi-publish:
+    name: Publish to PyPI
     runs-on: ubuntu-latest
-    needs:
-      - release-build
+    needs: [build, sdist]
+
     permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing
       id-token: write
 
-    # Dedicated environments with protections for publishing are strongly recommended.
-    # For more information, see: https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment#deployment-protection-rules
     environment:
       name: pypi
-      # OPTIONAL: uncomment and update to include your PyPI project URL in the deployment status:
-      # url: https://pypi.org/p/YOURPROJECT
-      #
-      # ALTERNATIVE: if your GitHub Release name is the PyPI project version string
-      # ALTERNATIVE: exactly, uncomment the following line instead:
-      # url: https://pypi.org/project/YOURPROJECT/${{ github.event.release.name }}
+      # url: https://pypi.org/project/YOURPROJECT/
 
     steps:
-      - name: Retrieve release distributions
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: release-dists
           path: dist/
+          merge-multiple: true
 
-      - name: Publish release distributions to PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
