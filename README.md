@@ -1,5 +1,5 @@
 # fast_thumbhash
-[![Upload Python Package](https://github.com/sitatec/fast_python_thumbhash/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/sitatec/fast_python_thumbhash/actions/workflows/release.yml)
+[![Release](https://github.com/sitatec/fast_python_thumbhash/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/sitatec/fast_python_thumbhash/actions/workflows/release.yml)
 
 A fast Python package for [ThumbHash](https://github.com/evanw/thumbhash) image encoding/decoding using Rust bindings (PyO3, maturin) to the official `thumbhash` crate.
 
